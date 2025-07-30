@@ -8,12 +8,28 @@ const banner = document.querySelector('.app__image');
 const titulo = document.querySelector('.app__title');
 const btns =document.querySelectorAll('.app__card-button');
 const musicInput = document.getElementById('alternar-musica');
+const startPauseBtn = document.getElementById('start-pause');
+const iniciarOuPausarBtn = document.querySelector('#start-pause span');
+const imagemInputIniciarPausar = document.querySelector('.app__card-primary-butto-icon');
+const tempoNaTela = document.getElementById('timer');
+
+// Musicas
+
 const music = new Audio('./sons/luna-rise-part-one.mp3');
+const musicPlay = new Audio('./sons/play.wav');
+const musicPause = new Audio('./sons/pause.mp3');
+const musicEnd = new Audio('./sons/beep.mp3');
+
+let tempoDecorridoEmSegundos = 5;
+let intervaloId = null
 
 // Adiciona loop na musica e define o volume em 50%
 
 music.loop = true;
-music.volume = 0.5; 
+music.volume = 0.5;
+musicPlay.volume = 0.5;
+musicPause.volume = 0.5;
+musicEnd.volume = 0.5;
 
 // Acionando Input de musica
 
@@ -77,4 +93,43 @@ function alterarContexto(contexto) {
         default:
             break;
     }
+}
+
+// Funcionamento do contador
+
+const contagemRegressiva = () => {
+
+    if (tempoDecorridoEmSegundos <= 0) {
+        musicEnd.play();
+        alert('Tempo Finalizado');
+        zerar();
+        return;
+    }
+
+    tempoDecorridoEmSegundos -= 1
+    console.log('Temporizador: ' + tempoDecorridoEmSegundos);
+}
+
+startPauseBtn.addEventListener('click', iniciarOuPausar); // Chamada do button
+
+function iniciarOuPausar() {
+
+    if (intervaloId) {
+        zerar();
+        musicPause.play();
+        return;
+    }
+
+    intervaloId = setInterval(contagemRegressiva, 1000);
+    musicPlay.play();
+    iniciarOuPausarBtn.textContent = 'Pausar';
+    imagemInputIniciarPausar.setAttribute('src', `./imagens/pause.png`);
+}
+
+function zerar() {
+
+    clearInterval(intervaloId);
+    iniciarOuPausarBtn.textContent = 'Começar';
+    imagemInputIniciarPausar.setAttribute('src', `./imagens/play_arrow.png`);
+    intervaloId = null;
 }
