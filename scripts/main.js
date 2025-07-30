@@ -20,7 +20,7 @@ const musicPlay = new Audio('./sons/play.wav');
 const musicPause = new Audio('./sons/pause.mp3');
 const musicEnd = new Audio('./sons/beep.mp3');
 
-let tempoDecorridoEmSegundos = 5;
+let tempoDecorridoEmSegundos = 25 * 60;
 let intervaloId = null
 
 // Adiciona loop na musica e define o volume em 50%
@@ -44,16 +44,25 @@ musicInput.addEventListener('change', () => {
 // Acionamento dos buttons
 
 focoBtn.addEventListener("click", () => {
+    zerar();
+    tempoDecorridoEmSegundos = 25 * 60;
+    mostrarTempo();
     alterarContexto('foco');
     focoBtn.classList.add('active');
 });
 
 curtoBtn.addEventListener('click', () => {
+    zerar();
+    tempoDecorridoEmSegundos = 5 * 60;
+    mostrarTempo();
     alterarContexto('descanso-curto');
     curtoBtn.classList.add('active');
 });
 
 longoBtn.addEventListener('click', () => {
+    zerar();
+    tempoDecorridoEmSegundos = 15 * 60;
+    mostrarTempo();
     alterarContexto('descanso-longo');
     longoBtn.classList.add('active');
 });
@@ -107,7 +116,7 @@ const contagemRegressiva = () => {
     }
 
     tempoDecorridoEmSegundos -= 1
-    console.log('Temporizador: ' + tempoDecorridoEmSegundos);
+    mostrarTempo();
 }
 
 startPauseBtn.addEventListener('click', iniciarOuPausar); // Chamada do button
@@ -133,3 +142,13 @@ function zerar() {
     imagemInputIniciarPausar.setAttribute('src', `./imagens/play_arrow.png`);
     intervaloId = null;
 }
+
+// Mostrar tempo na tela
+
+function mostrarTempo() {
+    const tempo = new Date(tempoDecorridoEmSegundos * 1000);
+    const tempoFormatado = tempo.toLocaleTimeString('pt-br', {minute: '2-digit', second: '2-digit'});
+    tempoNaTela.innerHTML = `${tempoFormatado}`;
+}
+
+mostrarTempo();
